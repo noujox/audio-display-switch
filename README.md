@@ -1,109 +1,83 @@
 # Audio Display AutoSwitch
 
-Proyecto simple para alternar entre modo **PC** y modo **TV** en Windows, sincronizando pantallas y audio.
+Audio Display AutoSwitch is a small Windows project for people who switch often between a desk monitor setup and a TV setup.
 
-Esta carpeta contiene **2 funciones separadas** que pueden usarse juntas o por separado:
+The idea is simple: changing displays and audio every time can be annoying. This project removes most of that manual work.
 
-- `Monitor/`: monitor automatico (daemon) que reacciona al audio por defecto.
-- `SwitchButton/`: boton manual para alternar modo TV/PC con un click.
+## Why this exists
 
-## Requisitos
+Many gaming and media setups use two common modes:
 
-- Windows 10/11
-- PowerShell
-- [MonitorSwitcher](https://sourceforge.net/projects/monitorswitcher/) (portable)
+- **PC mode**: desk monitors + headphones/speakers
+- **TV mode**: HDMI TV + TV audio
 
-Ruta esperada por defecto:
+Windows can handle both, but switching back and forth repeatedly usually means several clicks in different menus. This repo was built to make that transition quick and reliable.
 
-`C:\Tools\MonitorSwitcher\app\MonitorSwitcher.exe`
+## Two separate tools
 
-Puedes cambiarla durante los setups.
+This repository contains two independent modules. You can use either one, or both.
 
-## 1) Monitor (automatico)
+### `Monitor/` (automatic)
 
-Detecta continuamente la salida de audio por defecto y cambia perfiles de pantalla:
+Runs in the background and watches your default audio output.
 
-- audio TV -> perfil TV
-- audio no TV -> perfil PC
-- audio no TV -> otro no TV -> no cambia pantallas
+- If audio switches to TV, it loads the TV display profile.
+- If audio switches away from TV, it loads the PC display profile.
+- If audio changes between two non-TV devices, it does nothing.
 
-### Setup
+Setup:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\Tools\AudioDisplayAutoSwitch\Monitor\Install.ps1"
 ```
 
-El instalador:
+This setup captures display profiles, asks for TV/PC audio endpoints, writes config, and enables auto-start.
 
-- captura `pc.xml` y `tv.xml`
-- pide endpoint de audio TV y endpoint de audio PC
-- guarda `Monitor\config.json`
-- registra autoarranque al iniciar sesion
-
-### Reconfigurar
+Useful commands:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\Tools\AudioDisplayAutoSwitch\Monitor\Reconfigure.ps1"
-```
-
-### Desinstalar
-
-```powershell
 powershell -ExecutionPolicy Bypass -File "C:\Tools\AudioDisplayAutoSwitch\Monitor\Uninstall.ps1"
 ```
 
-## 2) SwitchButton (manual)
+### `SwitchButton/` (manual)
 
-Boton para barra de tareas que alterna modo completo:
+Creates a one-click toggle button for taskbar use.
 
-- PC -> TV: aplica perfil TV y luego audio TV
-- TV -> PC: aplica perfil PC y luego audio PC
+- PC -> TV: apply TV display profile, then set TV audio
+- TV -> PC: apply PC display profile, then set PC audio
 
-Importante: este modulo es **standalone**. No depende de `Monitor/`.
+This module is standalone and does not require `Monitor/`.
 
-### Setup + shortcut
+Setup + shortcut creation:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "C:\Tools\AudioDisplayAutoSwitch\SwitchButton\Create-TaskbarToggleShortcut.ps1"
 ```
 
-Ese script tambien configura perfiles/endpoints y crea el acceso directo `Cambiar TV-7.1`.
+Then pin it from Start:
 
-Luego:
+1. Search `Cambiar TV-7.1`
+2. Right click
+3. Select **Pin to taskbar**
 
-1. Abrir Inicio
-2. Buscar `Cambiar TV-7.1`
-3. Click derecho -> **Anclar a la barra de tareas**
+## Requirements
 
-## Estructura
+- Windows 10/11
+- PowerShell
+- [MonitorSwitcher](https://sourceforge.net/projects/monitorswitcher/)
 
-```text
-AudioDisplayAutoSwitch/
-  Monitor/
-    Install.ps1
-    AudioDisplayAutoSwitch.ps1
-    AudioEndpointTools.ps1
-    Register-AudioDisplayAutoSwitchTask.ps1
-    Reconfigure.ps1
-    Uninstall.ps1
-    config.json
-    logs/
-    profiles/
+Default path used in scripts:
 
-  SwitchButton/
-    Create-TaskbarToggleShortcut.ps1
-    Toggle-AudioOutput.ps1
-    AudioEndpointTools.ps1
-    config.json
-    logs/
-    profiles/
-```
+`C:\Tools\MonitorSwitcher\app\MonitorSwitcher.exe`
 
-## Nota
+You can choose a different path during setup.
 
-Los `config.json` y perfiles (`pc.xml`, `tv.xml`) son especificos de cada equipo.  
-Si cambias monitor/TV/puerto HDMI, vuelve a correr el setup del modulo que uses.
+## Notes
+
+- `config.json` and display profiles are machine-specific.
+- If you change monitors, cables, GPU outputs, or audio devices, run setup again.
 
 ## License
 
-MIT - see `LICENSE`.
+MPL-2.0. See `LICENSE`.

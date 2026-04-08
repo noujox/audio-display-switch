@@ -1,0 +1,10 @@
+# Runtime artifacts
+**/logs/*.log
+**/logs/*.old
+
+# User-generated display profiles
+**/profiles/*.xml
+
+# Keep directories
+!**/logs/.gitkeep
+!**/profiles/.gitkeep

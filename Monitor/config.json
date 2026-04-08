@@ -1,0 +1,21 @@
+{
+  "monitorSwitcherExe": "C:\\Tools\\MonitorSwitcher\\app\\MonitorSwitcher.exe",
+  "profiles": {
+    "pc": "C:\\Tools\\AudioDisplayAutoSwitch\\Monitor\\profiles\\pc.xml",
+    "tv": "C:\\Tools\\AudioDisplayAutoSwitch\\Monitor\\profiles\\tv.xml"
+  },
+  "audio": {
+    "tvEndpointId": "",
+    "pcEndpointId": "",
+    "pollMs": 1500,
+    "debounceCount": 2,
+    "cooldownSeconds": 4
+  },
+  "behavior": {
+    "enforceStateOnStart": true
+  },
+  "logging": {
+    "path": "C:\\Tools\\AudioDisplayAutoSwitch\\Monitor\\logs\\switch.log",
+    "maxSizeMb": 5
+  }
+}
